@@ -1,1 +1,88 @@
-<div id="position-size-calculator-256728"><script type="text/javascript" src="https://www.cashbackforex.com/Content/remote/remote-widgets.js"></script><script type="text/javascript"> RemoteCalc({"Url":"https://robot-moss.github.io/forex_notion_widget/dynamic_stoploss_calc", "TopPaneStyle":"YmFja2dyb3VuZDogbGluZWFyLWdyYWRpZW50KCNmZmYgMjAlLCAjZjVmNWY1IDQ1JSk7IGNvbG9yOiBibGFjazsgYm9yZGVyOiBzb2xpZCAxcHggI2FhYTsgYm9yZGVyLWJvdHRvbTogbm9uZTsg","BottomPaneStyle":"YmFja2dyb3VuZDogI2YzZjNmMzsgYm9yZGVyOiBzb2xpZCAxcHggI2FhYTsgY29sb3I6IGJsYWNrOw==","ButtonStyle":"YmFja2dyb3VuZDogIzM0MzU0MDsgY29sb3I6IHdoaXRlOyBib3JkZXItcmFkaXVzOiAyMHB4Ow==","TitleStyle":"dGV4dC1hbGlnbjogbGVmdDsgZm9udC1zaXplOiA0MHB4OyBmb250LXdlaWdodDogNTAwOw==","TextboxStyle":"YmFja2dyb3VuZC1jb2xvcjogd2hpdGU7IGNvbG9yOiBibGFjazsgYm9yZGVyOiBzb2xpZCAxcHggI2FhYWFhYQ==","ContainerWidth":"665","HighlightColor":"#ffff00","IsDisplayTitle":true,"IsShowChartLinks":true,"IsShowEmbedButton":false,"CompactType":"large","Calculator":"position-size-calculator","ContainerId":"position-size-calculator-256728"});</script></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy/Sell Calculation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .buttons {
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .output {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Buy and Sell Calculator</h1>
+
+<label for="entry_price">Entry Price:</label>
+<input type="number" id="entry_price" step="0.00001" placeholder="Enter entry price"><br><br>
+
+<label for="atr">4H ATR:</label>
+<input type="number" id="atr" step="0.00001" placeholder="Enter 4H ATR"><br><br>
+
+<div class="buttons">
+    <button onclick="setStopLoss(2.5)">Wide Stop Loss</button>
+    <button onclick="setStopLoss(1.8)">Tight Stop Loss</button>
+</div>
+
+<div class="buttons">
+    <button onclick="calculate('buy')">Buy</button>
+    <button onclick="calculate('sell')">Sell</button>
+</div>
+
+<div class="output">
+    <h3>Results:</h3>
+    <p id="result"></p>
+    <p id="pip_difference"></p>
+</div>
+
+<script>
+    let stopLossMultiplier = 2.5;
+
+    function setStopLoss(multiplier) {
+        stopLossMultiplier = multiplier;
+        document.getElementById("result").textContent = `Stop Loss set to ${stopLossMultiplier === 2.5 ? 'Wide' : 'Tight'} (${stopLossMultiplier})`;
+    }
+
+    function calculate(type) {
+        const entryPrice = parseFloat(document.getElementById('entry_price').value);
+        const atr = parseFloat(document.getElementById('atr').value);
+
+        if (isNaN(entryPrice) || isNaN(atr)) {
+            alert('Please enter valid numbers for entry price and 4H ATR.');
+            return;
+        }
+
+        let result, pipDifference;
+
+        if (type === 'buy') {
+            result = entryPrice - (atr * stopLossMultiplier);
+        } else if (type === 'sell') {
+            result = entryPrice + (atr * stopLossMultiplier);
+        }
+
+        pipDifference = Math.abs(entryPrice - result);
+
+        // Ensuring the result has the same decimal places as the entry price
+        const decimalPlaces = (entryPrice.toString().split('.')[1] || []).length;
+        result = result.toFixed(decimalPlaces);
+        pipDifference = pipDifference.toFixed(decimalPlaces);
+
+        document.getElementById('result').textContent = `The ${type === 'buy' ? 'Buy' : 'Sell'} price is: ${result}`;
+        document.getElementById('pip_difference').textContent = `Pip Difference: ${pipDifference}`;
+    }
+</script>
+
+</body>
+</html>
