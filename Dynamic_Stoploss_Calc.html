@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy/Sell Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 200px;
+            text-align: center;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Buy/Sell Price Calculator</h2>
+
+    <label for="entryPrice">Entry Price: </label>
+    <input type="number" id="entryPrice" placeholder="Enter entry price" step="0.01"><br>
+
+    <label for="atr">4H ATR: </label>
+    <input type="number" id="atr" placeholder="Enter 4H ATR" step="0.01"><br>
+
+    <h3>Select Stop Loss Type</h3>
+    <button id="wideStopLoss">Wide Stop Loss (X = 2.5)</button>
+    <button id="tightStopLoss">Tight Stop Loss (X = 1.8)</button>
+
+    <h3>Calculate Buy/Sell</h3>
+    <button id="buyButton">Buy</button>
+    <button id="sellButton">Sell</button>
+
+    <div class="result">
+        <p id="buyResult"></p>
+        <p id="sellResult"></p>
+    </div>
+
+    <script>
+        let X = 2.5; // Default to Wide Stop Loss
+
+        // Update X value based on stop loss type
+        document.getElementById('wideStopLoss').addEventListener('click', function() {
+            X = 2.5;
+            alert("Wide Stop Loss selected (X = 2.5)");
+        });
+
+        document.getElementById('tightStopLoss').addEventListener('click', function() {
+            X = 1.8;
+            alert("Tight Stop Loss selected (X = 1.8)");
+        });
+
+        // Calculate Buy
+        document.getElementById('buyButton').addEventListener('click', function() {
+            const entryPrice = parseFloat(document.getElementById('entryPrice').value);
+            const atr = parseFloat(document.getElementById('atr').value);
+            if (!isNaN(entryPrice) && !isNaN(atr)) {
+                const buy = entryPrice - (atr * X);
+                document.getElementById('buyResult').innerText = "Buy Price: " + buy.toFixed(2);
+            } else {
+                alert("Please enter valid entry price and ATR values.");
+            }
+        });
+
+        // Calculate Sell
+        document.getElementById('sellButton').addEventListener('click', function() {
+            const entryPrice = parseFloat(document.getElementById('entryPrice').value);
+            const atr = parseFloat(document.getElementById('atr').value);
+            if (!isNaN(entryPrice) && !isNaN(atr)) {
+                const sell = entryPrice + (atr * X);
+                document.getElementById('sellResult').innerText = "Sell Price: " + sell.toFixed(2);
+            } else {
+                alert("Please enter valid entry price and ATR values.");
+            }
+        });
+    </script>
+
+</body>
+</html>
