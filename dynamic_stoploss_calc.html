@@ -3,83 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stop Loss Calculator</title>
+    <title>Buy/Sell Calculation</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
         }
-        .container {
-            margin-bottom: 20px;
+        .buttons {
+            margin: 10px 0;
         }
         button {
+            padding: 10px;
             margin-right: 10px;
-            padding: 10px 15px;
-            font-size: 16px;
+            cursor: pointer;
         }
-        #result {
+        .output {
             margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Stop Loss Calculator</h1>
-    
-    <div class="container">
-        <label for="entry_price">Entry Price: </label>
-        <input type="number" id="entry_price" step="0.00001" placeholder="Enter entry price" />
-    </div>
-    
-    <div class="container">
-        <label for="atr">4H ATR: </label>
-        <input type="number" id="atr" step="0.00001" placeholder="Enter ATR value" />
-    </div>
 
-    <div class="container">
-        <button onclick="calculate('wide')">Wide Stop Loss</button>
-        <button onclick="calculate('tight')">Tight Stop Loss</button>
-    </div>
+<h1>Buy and Sell Calculator</h1>
 
-    <div id="result"></div>
+<label for="entry_price">Entry Price:</label>
+<input type="number" id="entry_price" step="0.00001" placeholder="Enter entry price"><br><br>
 
-    <script>
-        function calculate(type) {
-            let entryPrice = parseFloat(document.getElementById("entry_price").value);
-            let atr = parseFloat(document.getElementById("atr").value);
-            let X;
+<label for="atr">4H ATR:</label>
+<input type="number" id="atr" step="0.00001" placeholder="Enter 4H ATR"><br><br>
 
-            // Set X based on the button clicked
-            if (type === 'wide') {
-                X = 2.5;
-            } else if (type === 'tight') {
-                X = 1.8;
-            }
+<div class="buttons">
+    <button onclick="setStopLoss(2.5)">Wide Stop Loss</button>
+    <button onclick="setStopLoss(1.8)">Tight Stop Loss</button>
+</div>
 
-            // Calculate Buy and Sell values
-            let buy = entryPrice - (atr * X);
-            let sell = entryPrice + (atr * X);
+<div class="buttons">
+    <button onclick="calculate('buy')">Buy</button>
+    <button onclick="calculate('sell')">Sell</button>
+</div>
 
-            // Format the Buy and Sell values to match the decimal places of entry price
-            let decimalPlaces = (entryPrice.toString().split(".")[1] || "").length;
-            buy = buy.toFixed(decimalPlaces);
-            sell = sell.toFixed(decimalPlaces);
+<div class="output">
+    <h3>Results:</h3>
+    <p id="result"></p>
+    <p id="pip_difference"></p>
+</div>
 
-            // Calculate Pip (difference)
-            let pipBuy = Math.abs(entryPrice - buy).toFixed(decimalPlaces);
-            let pipSell = Math.abs(entryPrice - sell).toFixed(decimalPlaces);
+<script>
+    let stopLossMultiplier = 2.5;
 
-            // Display the results
-            document.getElementById("result").innerHTML = `
-                <div>
-                    <button>Buy: ${buy}</button>
-                    <span>Pip (Buy): ${pipBuy}</span>
-                </div>
-                <div>
-                    <button>Sell: ${sell}</button>
-                    <span>Pip (Sell): ${pipSell}</span>
-                </div>
-            `;
+    function setStopLoss(multiplier) {
+        stopLossMultiplier = multiplier;
+        document.getElementById("result").textContent = `Stop Loss set to ${stopLossMultiplier === 2.5 ? 'Wide' : 'Tight'} (${stopLossMultiplier})`;
+    }
+
+    function calculate(type) {
+        const entryPrice = parseFloat(document.getElementById('entry_price').value);
+        const atr = parseFloat(document.getElementById('atr').value);
+
+        if (isNaN(entryPrice) || isNaN(atr)) {
+            alert('Please enter valid numbers for entry price and 4H ATR.');
+            return;
         }
-    </script>
+
+        let result, pipDifference;
+
+        if (type === 'buy') {
+            result = entryPrice - (atr * stopLossMultiplier);
+        } else if (type === 'sell') {
+            result = entryPrice + (atr * stopLossMultiplier);
+        }
+
+        pipDifference = Math.abs(entryPrice - result);
+
+        // Ensuring the result has the same decimal places as the entry price
+        const decimalPlaces = (entryPrice.toString().split('.')[1] || []).length;
+        result = result.toFixed(decimalPlaces);
+        pipDifference = pipDifference.toFixed(decimalPlaces);
+
+        document.getElementById('result').textContent = `The ${type === 'buy' ? 'Buy' : 'Sell'} price is: ${result}`;
+        document.getElementById('pip_difference').textContent = `Pip Difference: ${pipDifference}`;
+    }
+</script>
+
 </body>
 </html>
