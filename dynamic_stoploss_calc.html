@@ -32,8 +32,8 @@
 <input type="number" id="atr" step="0.00001" placeholder="Enter 4H ATR"><br><br>
 
 <div class="buttons">
-    <button onclick="setStopLoss(2.5)">Wide Stop Loss</button>
-    <button onclick="setStopLoss(1.8)">Tight Stop Loss</button>
+    <button onclick="setStopLoss(2.0)">Wide Stop Loss</button>
+    <button onclick="setStopLoss(1.5)">Tight Stop Loss</button>
 </div>
 
 <div class="buttons">
@@ -48,11 +48,11 @@
 </div>
 
 <script>
-    let stopLossMultiplier = 2.5;
+    let stopLossMultiplier = 2.0;
 
     function setStopLoss(multiplier) {
         stopLossMultiplier = multiplier;
-        document.getElementById("result").textContent = `Stop Loss set to ${stopLossMultiplier === 2.5 ? 'Wide' : 'Tight'} (${stopLossMultiplier})`;
+        document.getElementById("result").textContent = `Stop Loss set to ${stopLossMultiplier === 2.0 ? 'Wide' : 'Tight'} (${stopLossMultiplier})`;
     }
 
     function calculate(type) {
